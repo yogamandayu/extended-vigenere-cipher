@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../cbc-lsb/.idea/cbc-lsb.iml" filepath="$PROJECT_DIR$/../cbc-lsb/.idea/cbc-lsb.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/extended-vigenere-cipher.iml" filepath="$PROJECT_DIR$/.idea/extended-vigenere-cipher.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../vigenere-cipher-v2/.idea/vigenere-cipher-v2.iml" filepath="$PROJECT_DIR$/../vigenere-cipher-v2/.idea/vigenere-cipher-v2.iml" />
+    </modules>
+  </component>
+</project>
