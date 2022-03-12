@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../cbc-lsb/.idea/cbc-lsb.iml" filepath="$PROJECT_DIR$/../cbc-lsb/.idea/cbc-lsb.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/extended-vigenere-cipher.iml" filepath="$PROJECT_DIR$/.idea/extended-vigenere-cipher.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../n-rook-problem/.idea/n-rook-problem.iml" filepath="$PROJECT_DIR$/../n-rook-problem/.idea/n-rook-problem.iml" />
       <module fileurl="file://$PROJECT_DIR$/../vigenere-cipher-v2/.idea/vigenere-cipher-v2.iml" filepath="$PROJECT_DIR$/../vigenere-cipher-v2/.idea/vigenere-cipher-v2.iml" />
     </modules>
   </component>

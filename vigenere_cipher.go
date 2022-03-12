@@ -23,7 +23,12 @@ func NewVigenereCipher(table *table.VigenereTable) *VigenereCipher {
 
 var _ VigenereCipherInterface = &VigenereCipher{}
 
+// Encrypt method do the traditional way.
 func (v VigenereCipher) Encrypt(plaintext, key string) (string, error) {
+	if v.VigenereTable == nil {
+		return "", fmt.Errorf("vigenere_cipher.error.missing_table")
+	}
+
 	var ciphertext strings.Builder
 	var ik int // iterating through key purpose.
 	for _, r := range plaintext {
@@ -31,8 +36,8 @@ func (v VigenereCipher) Encrypt(plaintext, key string) (string, error) {
 		k := string(key[ik])
 
 		indexS, indexK := -1, -1
-		for j := 0; j < len((*v.VigenereTable)[0]); j++ {
-			if (*v.VigenereTable)[0][j] == s {
+		for j := 0; j < len((v.VigenereTable.Cell)[0]); j++ {
+			if (v.VigenereTable.Cell)[0][j] == s {
 				indexS = j
 				break
 			}
@@ -41,8 +46,8 @@ func (v VigenereCipher) Encrypt(plaintext, key string) (string, error) {
 			return "", fmt.Errorf("vigenere_cipher.error.plaintext_char_not_found")
 		}
 
-		for j := 0; j < len(*v.VigenereTable); j++ {
-			if (*v.VigenereTable)[0][j] == k {
+		for j := 0; j < len(v.VigenereTable.Cell); j++ {
+			if (v.VigenereTable.Cell)[0][j] == k {
 				indexK = j
 				break
 			}
@@ -51,7 +56,7 @@ func (v VigenereCipher) Encrypt(plaintext, key string) (string, error) {
 			return "", fmt.Errorf("vigenere_cipher.error.key_char_not_found")
 		}
 
-		ciphertext.WriteString((*v.VigenereTable)[indexK][indexS])
+		ciphertext.WriteString((v.VigenereTable.Cell)[indexK][indexS])
 		ik++
 		if ik >= len(key) {
 			ik = 0
@@ -61,7 +66,12 @@ func (v VigenereCipher) Encrypt(plaintext, key string) (string, error) {
 	return ciphertext.String(), nil
 }
 
+// Decrypt method do the traditional way.
 func (v VigenereCipher) Decrypt(ciphertext, key string) (string, error) {
+	if v.VigenereTable == nil {
+		return "", fmt.Errorf("vigenere_cipher.error.missing_table")
+	}
+
 	var plaintext strings.Builder
 	var ik int // iterating through key purpose.
 	for _, r := range ciphertext {
@@ -70,8 +80,8 @@ func (v VigenereCipher) Decrypt(ciphertext, key string) (string, error) {
 
 		indexS, indexK := -1, -1
 
-		for j := 0; j < len(*v.VigenereTable); j++ {
-			if (*v.VigenereTable)[0][j] == k {
+		for j := 0; j < len(v.VigenereTable.Cell); j++ {
+			if (v.VigenereTable.Cell)[0][j] == k {
 				indexK = j
 				break
 			}
@@ -80,8 +90,8 @@ func (v VigenereCipher) Decrypt(ciphertext, key string) (string, error) {
 			return "", fmt.Errorf("vigenere_cipher.error.key_char_not_found")
 		}
 
-		for j := 0; j < len((*v.VigenereTable)[indexK]); j++ {
-			if (*v.VigenereTable)[indexK][j] == s {
+		for j := 0; j < len((v.VigenereTable.Cell)[indexK]); j++ {
+			if (v.VigenereTable.Cell)[indexK][j] == s {
 				indexS = j
 				break
 			}
@@ -90,7 +100,7 @@ func (v VigenereCipher) Decrypt(ciphertext, key string) (string, error) {
 			return "", fmt.Errorf("vigenere_cipher.error.ciphertext_char_not_found")
 		}
 
-		plaintext.WriteString((*v.VigenereTable)[0][indexS])
+		plaintext.WriteString((v.VigenereTable.Cell)[0][indexS])
 		ik++
 		if ik >= len(key) {
 			ik = 0

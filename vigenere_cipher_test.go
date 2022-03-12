@@ -11,12 +11,13 @@ import (
 func TestVigenereCipher_Encrypt(t *testing.T) {
 	plaintext := "AAAA"
 	key := "BBBB"
-	var vt table.VigenereTable
 
 	charset := table.UpperCaseCharset()
-	vt.Generate(charset)
-
-	vc := evc.NewVigenereCipher(&vt)
+	vt := table.NewVigenereTable(charset, charset)
+	err := vt.Generate()
+	require.NoError(t, err)
+	vt.Print()
+	vc := evc.NewVigenereCipher(vt)
 	ciphertext, err := vc.Encrypt(plaintext, key)
 	require.NoError(t, err)
 	resPlaintext, err := vc.Decrypt(ciphertext, key)

@@ -7,5 +7,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="vigenere-cipher-v2" />
     <orderEntry type="module" module-name="cbc-lsb" />
+    <orderEntry type="module" module-name="n-rook-problem" />
   </component>
 </module>
