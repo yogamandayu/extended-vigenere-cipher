@@ -1,10 +1,14 @@
 package table
 
-import "fmt"
+import (
+	"extended-vigenere-cipher/util"
+	"fmt"
+)
 
 type VigenereTableInterface interface {
-	Generate() error
-	Set(table [][]string)
+	Generate(textCharset, keyCharset []string) [][]string
+	GetSubTextIndex(subText string) (int, error)
+	GetSubKeyIndex(subKey string) (int, error)
 	Print()
 }
 
@@ -12,7 +16,7 @@ type VigenereTableInterface interface {
 This is how I imagine the concept of vigenere table.
 I separated between key and text charset with the cell.
 It will make the vigenere table have a flexibility of charset.
-For example, you can randomize the key and text charset or the table too.
+For example, you can randomize the key/text charset or the table too.
 
 Key			Text			Cell
 0|A|		0|A|			ABCDEF
@@ -38,48 +42,56 @@ type VigenereTable struct {
 
 var _ VigenereTableInterface = &VigenereTable{}
 
-func NewVigenereTable(textCharset, keyCharset []string) *VigenereTable {
-	return &VigenereTable{
-		TextCharset: textCharset,
-		KeyCharset:  keyCharset,
+// NewVigenereTable is a constructor. if table is not provided, it will generate by key and text charset
+func NewVigenereTable(textCharset, keyCharset []string, table [][]string) *VigenereTable {
+	var v VigenereTable
+	if len(table) == 0 {
+		v.Cell = v.Generate(textCharset, keyCharset)
 	}
+	v.TextCharset = textCharset
+	v.KeyCharset = keyCharset
+	return &v
 }
 
 // Generate will generate vigenere table from a charset. Different position of charset will generate different table.
 // Example : charset with A-Z & 0-9 | 0-9 & A-Z. will generate different table.
 // Generated cell depends on TextCharset.
-func (v *VigenereTable) Generate() error {
-	if len(v.TextCharset) == 0 {
-		return fmt.Errorf("vigenere_cipher.error.missing_text_charset")
-	}
-	if len(v.KeyCharset) == 0 {
-		return fmt.Errorf("vigenere_cipher.error.missing_key_charset")
-	}
-	if len(v.KeyCharset) > len(v.TextCharset) {
-		return fmt.Errorf("vigenere_cipher.error.invalid_charset_length")
-	}
+func (v *VigenereTable) Generate(textCharset, keyCharset []string) [][]string {
+	cell := make([][]string, len(keyCharset))
+	for i := 0; i < len(keyCharset); i++ {
+		cell[i] = make([]string, len(textCharset))
 
-	v.Cell = make([][]string, len(v.KeyCharset))
-	for i := 0; i < len(v.KeyCharset); i++ {
-		v.Cell[i] = make([]string, len(v.TextCharset))
+		for j := 0; j < len(textCharset); j++ {
+			x := j + (i % len(textCharset))
 
-		for j := 0; j < len(v.TextCharset); j++ {
-			x := j + i
-
-			if x > len(v.TextCharset)-1 {
-				x -= len(v.TextCharset)
+			if x > len(textCharset)-1 {
+				x -= len(textCharset)
 			}
 
-			v.Cell[i][j] = v.TextCharset[x]
+			cell[i][j] = textCharset[x]
 		}
 	}
-	return nil
+	return cell
 }
 
-// Set is to set vigenere table with custom table.
-// Example : row and column have different charset.
-func (v *VigenereTable) Set(table [][]string) {
-	v.Cell = table
+// GetSubTextIndex is to get index location of specific text character.
+func (v *VigenereTable) GetSubTextIndex(subText string) (int, error) {
+	for i, s := range v.TextCharset {
+		if s == subText {
+			return i, nil
+		}
+	}
+	return 0, fmt.Errorf("extended_vigenere_cipher.error.subtext_not_found")
+}
+
+// GetSubKeyIndex is to get index location of specific key character.
+func (v *VigenereTable) GetSubKeyIndex(subKey string) (int, error) {
+	for i, s := range v.KeyCharset {
+		if s == subKey {
+			return i, nil
+		}
+	}
+	return 0, fmt.Errorf("extended_vigenere_cipher.error.subkey_not_found")
 }
 
 // Print will print vigenere table.
@@ -90,4 +102,64 @@ func (v *VigenereTable) Print() {
 		}
 		fmt.Println()
 	}
+}
+
+// GenerateYumnamTable will generate random vigenere table. it will return encrypt and decrypt table.
+func GenerateYumnamTable(seed int, charset []string, colUnique bool) (encryptTable *VigenereTable, decryptTable *VigenereTable, err error) {
+
+	encryptTable = NewVigenereTable(charset, charset, nil)
+	decryptTable = NewVigenereTable(charset, charset, nil)
+	size := len(encryptTable.Cell)
+
+	arr := util.TwoDimensionArrayRandomInteger(seed, size)
+	if colUnique {
+		// Column Unique.
+		for i := 0; i < size; i++ {
+			for j := 0; j < size; j++ {
+				temp := encryptTable.Cell[j][i]
+				encryptTable.Cell[j][i] = encryptTable.Cell[arr[i][j]][i]
+				encryptTable.Cell[arr[i][j]][i] = temp
+			}
+		}
+
+		//Formula Yumnan Cell : Dt (Et (M, N), N) = M
+		for i := 0; i < size; i++ {
+			for j := 0; j < size; j++ {
+				cell := encryptTable.Cell[i][j]
+
+				et, err := encryptTable.GetSubKeyIndex(cell)
+				if err != nil {
+					return nil, nil, err
+				}
+
+				m := encryptTable.TextCharset[i]
+				decryptTable.Cell[et][j] = m
+			}
+		}
+	} else {
+		// Row Unique.
+		for i := 0; i < size; i++ {
+			for j := 0; j < size; j++ {
+				temp := encryptTable.Cell[i][j]
+				encryptTable.Cell[i][j] = encryptTable.Cell[i][arr[i][j]]
+				encryptTable.Cell[i][(arr)[i][j]] = temp
+			}
+		}
+
+		//Formula Yumnan Cell : Dt (M,Et(M,N)) = N
+		for i := 0; i < size; i++ {
+			for j := 0; j < size; j++ {
+				cell := encryptTable.Cell[i][j]
+
+				et, err := encryptTable.GetSubKeyIndex(cell)
+				if err != nil {
+					return nil, nil, err
+				}
+
+				n := encryptTable.TextCharset[j]
+				decryptTable.Cell[i][et] = n
+			}
+		}
+	}
+	return
 }
