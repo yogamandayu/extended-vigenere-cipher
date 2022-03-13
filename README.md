@@ -64,6 +64,8 @@ ciphertext, err := e.Encrypt(plaintext, key, ukey)
 e = NewExtendedVigenereCipher(dt, ColUniqueType, CiphertextAutokey)
 plaintext, err := e.Decrypt(ciphertext, key, ukey)
 ```
+## Journal
+[Google Drive](https://drive.google.com/file/d/14jG781UfoLB3hu-f9alzHmkhv5v0cLed/view?usp=sharing)
 
 ## License
 
