@@ -36,8 +36,7 @@ Prepare the requirement :
 1. Plaintext
 2. Key
 3. UKey (integer)
-4. Random vigenere table (optional). Standard vigenere table can be used, but if you want to implement separated table
-   for encrypt and decrypt you have to read the Yumnam's journal. You can use this code for generating Yumnam's table.
+4. Random vigenere table from Yumnam's journal. You can use this code for generating Yumnam's table.
 
 ```
 et, dt, err = table.GenerateYumnamTable(3, table.DefaultCharset(), true)
