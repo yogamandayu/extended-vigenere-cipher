@@ -1,10 +1,10 @@
 package extended_vigenere_cipher_test
 
 import (
-	evc "extended-vigenere-cipher"
-	"extended-vigenere-cipher/table"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	evc "github.com/yogamandayu/extended-vigenere-cipher"
+	"github.com/yogamandayu/extended-vigenere-cipher/table"
 	"testing"
 )
 
