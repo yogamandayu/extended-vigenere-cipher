@@ -1,9 +1,9 @@
 package extended_vigenere_cipher
 
 import (
-	"extended-vigenere-cipher/table"
-	"extended-vigenere-cipher/util"
 	"fmt"
+	"github.com/yogamandayu/extended-vigenere-cipher/table"
+	"github.com/yogamandayu/extended-vigenere-cipher/util"
 	"strings"
 )
 

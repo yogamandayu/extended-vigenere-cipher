@@ -1,8 +1,8 @@
 package table
 
 import (
-	"extended-vigenere-cipher/util"
 	"fmt"
+	"github.com/yogamandayu/extended-vigenere-cipher/util"
 )
 
 type VigenereTableInterface interface {
